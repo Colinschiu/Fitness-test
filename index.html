@@ -9,149 +9,46 @@
     
     <style>
         :root {
-            --primary: #2563eb;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --background: #f8fafc;
-            --card: #ffffff;
-            --text: #1e293b;
-            --border: #e2e8f0;
+            --primary: #2563eb; --success: #16a34a; --danger: #dc2626;
+            --background: #f8fafc; --card: #ffffff; --text: #1e293b; --border: #e2e8f0;
         }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--background);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background: var(--card);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-        }
-
-        h1 {
-            font-family: 'Montserrat', sans-serif;
-            text-align: center;
-            color: var(--primary);
-            margin-top: 0;
-            font-size: 28px;
-        }
-
+        body { font-family: 'Inter', sans-serif; background-color: var(--background); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 800px; background: var(--card); padding: 30px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        h1 { font-family: 'Montserrat', sans-serif; text-align: center; color: var(--primary); margin-top: 0; font-size: 28px; }
         .form-group { margin-bottom: 24px; }
-
-        label {
-            display: block; font-weight: 600; margin-bottom: 12px;
-            font-size: 18px; color: #334155;
-        }
-
-        /* --- DATABASE SELECTOR --- */
-        .db-upload {
-            background: #EFF6FF; padding: 15px; border-radius: 10px; 
-            border: 2px dashed #93c5fd; margin-bottom: 24px;
-        }
-        select.term-selector {
-            padding: 8px 12px; border-radius: 8px; border: 1px solid var(--primary);
-            background: white; color: var(--primary); font-weight: 600;
-            font-size: 16px; cursor: pointer; outline: none; width: 100%; max-width: 300px;
-        }
-
-        /* --- CLASS SELECTION BUTTONS --- */
-        .class-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-            gap: 10px; max-height: 150px; overflow-y: auto; padding: 4px;
-            border: 1px solid var(--border); border-radius: 10px; background: #f8fafc;
-        }
-
-        .tap-btn {
-            padding: 12px 8px; font-size: 16px; font-weight: 600;
-            background: #ffffff; border: 2px solid var(--border);
-            border-radius: 8px; color: var(--text); cursor: pointer;
-            text-align: center; transition: all 0.2s ease;
-        }
-
+        label { display: block; font-weight: 600; margin-bottom: 12px; font-size: 18px; color: #334155; }
+        
+        .db-upload { background: #EFF6FF; padding: 15px; border-radius: 10px; border: 2px dashed #93c5fd; margin-bottom: 24px; }
+        select.term-selector { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--primary); background: white; color: var(--primary); font-weight: 600; font-size: 16px; cursor: pointer; outline: none; width: 100%; max-width: 300px; }
+        
+        .class-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; max-height: 150px; overflow-y: auto; padding: 4px; border: 1px solid var(--border); border-radius: 10px; background: #f8fafc; }
+        .tap-btn { padding: 12px 8px; font-size: 16px; font-weight: 600; background: #ffffff; border: 2px solid var(--border); border-radius: 8px; color: var(--text); cursor: pointer; text-align: center; transition: all 0.2s ease; }
         .tap-btn:active { transform: scale(0.95); }
-        .tap-btn.active {
-            background-color: var(--primary); color: #ffffff;
-            border-color: var(--primary); box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
-        }
-
-        /* --- NUMBER GRID STYLES --- */
-        .number-grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); 
-            gap: 12px; max-height: 200px; overflow-y: auto; padding: 4px;
-            border: 1px solid var(--border); border-radius: 10px; background: #f8fafc;
-        }
+        .tap-btn.active { background-color: var(--primary); color: #ffffff; border-color: var(--primary); box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3); }
         
-        .number-box { 
-            display: flex; align-items: center; justify-content: center; 
-            height: 55px; background-color: #FFFFFF; 
-            border: 2px solid var(--border); border-radius: 12px; 
-            font-size: 18px; font-weight: 600; color: #64748b; 
-            cursor: pointer; transition: all 0.15s ease-in-out; 
-        }
-        
+        .number-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); gap: 12px; max-height: 200px; overflow-y: auto; padding: 4px; border: 1px solid var(--border); border-radius: 10px; background: #f8fafc; }
+        .number-box { display: flex; align-items: center; justify-content: center; height: 55px; background-color: #FFFFFF; border: 2px solid var(--border); border-radius: 12px; font-size: 18px; font-weight: 600; color: #64748b; cursor: pointer; transition: all 0.15s ease-in-out; }
         .number-box:active { transform: scale(0.95); }
-        .number-box.active { 
-            background-color: var(--primary); border-color: var(--primary); 
-            color: white; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3); transform: scale(1.05); 
-        }
-
-        /* --- STUDENT PROFILE CARD --- */
-        .id-card { 
-            background: linear-gradient(to right, #F0FDF4, #FFFFFF); 
-            border: 2px solid var(--success); padding: 20px; border-radius: 12px;
-            display: flex; align-items: center; transition: all 0.3s ease; 
-            margin-bottom: 24px;
-        }
-        .id-card.empty { 
-            background: linear-gradient(to right, #f8fafc, #FFFFFF); 
-            border: 2px dashed #cbd5e1; 
-        }
+        .number-box.active { background-color: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3); transform: scale(1.05); }
+        
+        .id-card { background: linear-gradient(to right, #F0FDF4, #FFFFFF); border: 2px solid var(--success); padding: 20px; border-radius: 12px; display: flex; align-items: center; transition: all 0.3s ease; margin-bottom: 24px; }
+        .id-card.empty { background: linear-gradient(to right, #f8fafc, #FFFFFF); border: 2px dashed #cbd5e1; }
         .id-card .avatar { font-size: 45px; margin-right: 20px; }
-        .id-card .status-label { 
-            color: var(--success); font-size: 13px; font-weight: 700; 
-            text-transform: uppercase; margin: 0 0 4px 0; letter-spacing: 1px;
-        }
+        .id-card .status-label { color: var(--success); font-size: 13px; font-weight: 700; text-transform: uppercase; margin: 0 0 4px 0; letter-spacing: 1px; }
         .id-card.empty .status-label { color: #64748b; }
         .id-card h3 { color: #064E3B; font-size: 22px; margin: 0; font-family: 'Montserrat', sans-serif; }
         .id-card.empty h3 { color: #64748b; font-size: 18px; font-weight: 500; }
-
-        /* --- INPUTS & BUTTONS --- */
-        input {
-            width: 100%; padding: 16px; font-size: 18px;
-            border: 2px solid var(--border); border-radius: 10px;
-            box-sizing: border-box; background-color: #fff;
-            transition: border-color 0.2s;
-        }
+        
+        input { width: 100%; padding: 16px; font-size: 18px; border: 2px solid var(--border); border-radius: 10px; box-sizing: border-box; background-color: #fff; transition: border-color 0.2s; }
         input:focus { outline: none; border-color: var(--primary); }
-
-        .fitness-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-            background-color: #f1f5f9; padding: 20px; border-radius: 12px; margin-bottom: 24px;
-        }
-
-        .action-btn {
-            width: 100%; padding: 18px; font-size: 20px; font-weight: bold;
-            color: white; border: none; border-radius: 10px; cursor: pointer;
-            margin-bottom: 12px; transition: opacity 0.2s;
-        }
+        .fitness-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background-color: #f1f5f9; padding: 20px; border-radius: 12px; margin-bottom: 24px; }
+        
+        .action-btn { width: 100%; padding: 18px; font-size: 20px; font-weight: bold; color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 12px; transition: opacity 0.2s; }
         .action-btn:active { opacity: 0.8; }
         .btn-save { background-color: var(--success); }
         .btn-export { background-color: var(--primary); }
         .btn-clear { background-color: var(--danger); margin-top: 20px;}
-
-        .status-bar {
-            text-align: center; font-size: 16px; color: #64748b;
-            margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);
-        }
+        .status-bar { text-align: center; font-size: 16px; color: #64748b; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body>
@@ -209,7 +106,7 @@
     </div>
 
     <button class="action-btn btn-save" onclick="saveData()">💾 Save Record & Next Student</button>
-    <button class="action-btn btn-export" onclick="exportData()">📊 Export to Excel</button>
+    <button class="action-btn btn-export" onclick="exportData()">📊 Export to Original Excel Format</button>
     
     <div class="status-bar">
         Records saved on this iPad: <strong id="recordCount">0</strong>
@@ -219,105 +116,105 @@
 </div>
 
 <script>
-    // --- APP STATE ---
-    let masterStudentList = []; 
+    let masterWorkbookBuffer = null; // Stores the exact raw Excel file
+    let masterStudentList = []; // Maps exact cell coordinates
     let savedRecords = JSON.parse(localStorage.getItem('fitnessRecords')) || [];
     let currentClass = null;
     let currentNumber = null;
     let currentStudentObj = null;
 
-    const CLASSES = [
-        "1A", "1B", "1C", "1D", 
-        "2A", "2B", "2C", "2D", 
-        "3A", "3B", "3C", "3D", 
-        "4A", "4B", "4C", "4D", 
-        "5A", "5B", "5C", "5D",
-        "6A", "6B", "6C", "6D"
-    ];
+    const CLASSES = ["1A", "1B", "1C", "1D", "2A", "2B", "2C", "2D", "3A", "3B", "3C", "3D", "4A", "4B", "4C", "4D", "5A", "5B", "5C", "5D"];
 
-    // --- INITIALIZATION ---
     window.onload = function() {
         updateRecordCount();
         renderClassButtons();
         renderNumberGrid(40); 
-        fetchMasterList(); // Fetches term1.xlsx by default
+        fetchMasterList(); 
     };
 
-    // --- FETCH MASTER EXCEL WITH SMART PARSER ---
+    // --- CORE ENGINE: FETCH AND MAP EXACT CELLS ---
     async function fetchMasterList() {
         const fileName = document.getElementById('termSelector').value;
         const statusText = document.getElementById('dbStatus');
-        
         statusText.innerText = `⏳ Fetching ${fileName}...`;
-        statusText.style.color = "#d97706"; // Warning orange
+        statusText.style.color = "#d97706";
 
         try {
             const cacheBuster = '?t=' + new Date().getTime();
             const response = await fetch('./' + fileName + cacheBuster); 
-            
             if (!response.ok) throw new Error("File not found");
             
             const arrayBuffer = await response.arrayBuffer();
+            masterWorkbookBuffer = arrayBuffer.slice(0); // SAVE A COPY OF THE RAW WORKBOOK
+            
             const workbook = XLSX.read(arrayBuffer, {type: 'array'});
-            const firstSheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheetName];
-            
-            // Get raw array data to bypass weird Excel headers
-            const rows = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-            
             let cleanList = [];
-            let clsIdx = -1, numIdx = -1, enIdx = -1, chIdx = -1;
 
-            for (let i = 0; i < rows.length; i++) {
-                const cols = rows[i];
-                if (!cols || cols.length === 0) continue;
+            // Read every sheet in the workbook
+            workbook.SheetNames.forEach(sheetName => {
+                if (sheetName.toLowerCase().includes("overall")) return; // Skip summary sheets
 
-                if (clsIdx === -1 && numIdx === -1) {
-                    for(let j=0; j<cols.length; j++) {
-                        const val = String(cols[j] || '').trim().toUpperCase();
-                        if (val === 'CLS_NAME') clsIdx = j;
-                        if (val === 'CLASS_NO') numIdx = j;
-                        if (val === 'EN_NAME') enIdx = j;
-                        if (val === 'CH_NAME') chIdx = j;
+                const worksheet = workbook.Sheets[sheetName];
+                // Read as raw 2D array to find exact rows and columns
+                const rows = XLSX.utils.sheet_to_json(worksheet, {header: 1, defval: ""});
+
+                let headerRowIdx = -1;
+                let colMap = {};
+
+                // Step 1: Find the header row in this specific sheet
+                for (let r = 0; r < rows.length; r++) {
+                    const row = rows[r];
+                    if (!row) continue;
+
+                    const clsNoIdx = row.findIndex(cell => String(cell).toUpperCase().trim() === 'CLASS_NO');
+                    if (clsNoIdx !== -1) {
+                        headerRowIdx = r;
+                        colMap.clsNo = clsNoIdx;
+                        colMap.enName = row.findIndex(cell => String(cell).toUpperCase().trim() === 'EN_NAME');
+                        colMap.chName = row.findIndex(cell => String(cell).toUpperCase().trim() === 'CH_NAME');
+                        // Find the fitness columns (first occurrence to avoid the "Score" column duplicates)
+                        colMap.pushUp = row.findIndex(cell => String(cell).trim() === 'Push up');
+                        colMap.sitUp = row.findIndex(cell => String(cell).trim() === 'Sit up');
+                        colMap.sitReach = row.findIndex(cell => String(cell).trim() === 'Sit & Reach');
+                        colMap.run9Min = row.findIndex(cell => String(cell).trim() === '9-min run');
+                        break;
                     }
                 }
 
-                if (clsIdx !== -1 && numIdx !== -1 && enIdx !== -1) {
-                    const clsName = String(cols[clsIdx] || '').trim().toUpperCase();
-                    const classNo = parseInt(String(cols[numIdx] || '').trim(), 10);
-                    const enName = String(cols[enIdx] || '').trim();
-                    const chName = chIdx !== -1 ? String(cols[chIdx] || '').trim() : "";
-
-                    if (/^[1-6][A-D]$/.test(clsName) && !isNaN(classNo)) {
-                        cleanList.push({
-                            CLS_NAME: clsName,
-                            CLASS_NO: classNo,
-                            EN_NAME: enName,
-                            CH_NAME: chName
-                        });
+                // Step 2: Map out where every student lives on this sheet
+                if (headerRowIdx !== -1) {
+                    for (let r = headerRowIdx + 1; r < rows.length; r++) {
+                        const row = rows[r];
+                        const classNo = parseInt(row[colMap.clsNo]);
+                        if (!isNaN(classNo)) {
+                            cleanList.push({
+                                SheetName: sheetName, // Exact tab name (e.g. "1A ")
+                                CleanClass: sheetName.replace(/\s/g, ''), // Cleaned for UI logic (e.g. "1A")
+                                ClassNo: classNo,
+                                EnName: row[colMap.enName] || "",
+                                ChName: colMap.chName !== -1 ? row[colMap.chName] : "",
+                                RowIndex: r, // <--- EXACT EXCEL ROW
+                                ColPushUp: colMap.pushUp, // <--- EXACT EXCEL COLUMNS
+                                ColSitUp: colMap.sitUp,
+                                ColSitReach: colMap.sitReach,
+                                ColRun9Min: colMap.run9Min
+                            });
+                        }
                     }
                 }
-            }
+            });
 
             masterStudentList = cleanList;
-            
-            statusText.innerText = `✅ Connected (${masterStudentList.length} students loaded)`;
+            statusText.innerText = `✅ Template Synced (${masterStudentList.length} students ready)`;
             statusText.style.color = "var(--success)";
-
-            // If a class was already selected, refresh the numbers
-            if (currentClass) {
-                const activeClassBtn = document.querySelector('#classGrid .tap-btn.active');
-                if (activeClassBtn) selectClass(currentClass, activeClassBtn);
-            }
 
         } catch (error) {
             console.error(error);
-            statusText.innerText = `❌ Error: Could not find ${fileName} on GitHub.`;
+            statusText.innerText = `❌ Error: Could not load template ${fileName}.`;
             statusText.style.color = "var(--danger)";
         }
     }
 
-    // --- RENDER CLASS BUTTONS ---
     function renderClassButtons() {
         const grid = document.getElementById('classGrid');
         grid.innerHTML = '';
@@ -330,7 +227,6 @@
         });
     }
 
-    // --- SELECT CLASS ---
     function selectClass(cls, clickedBtn) {
         currentClass = cls;
         currentNumber = null;
@@ -341,54 +237,37 @@
 
         let maxNum = 40; 
         if (masterStudentList.length > 0) {
-            const classStudents = masterStudentList.filter(s => s.CLS_NAME === cls);
+            const classStudents = masterStudentList.filter(s => s.CleanClass === cls);
             if (classStudents.length > 0) {
-                maxNum = Math.max(...classStudents.map(s => parseInt(s.CLASS_NO)));
-                if (isNaN(maxNum) || maxNum === 0) maxNum = 40;
+                maxNum = Math.max(...classStudents.map(s => s.ClassNo));
             }
         }
-
         document.getElementById('maxCountLabel').innerText = `(1 to ${maxNum})`;
         renderNumberGrid(maxNum);
         updateProfileCard();
     }
 
-    // --- RENDER NUMBER BUTTONS ---
     function renderNumberGrid(maxCount) {
         const grid = document.getElementById('numberGrid');
         grid.innerHTML = '';
-
         for (let i = 1; i <= maxCount; i++) {
             const btn = document.createElement('div');
-            btn.className = 'number-box';
-            btn.innerText = i;
-            btn.id = `num-btn-${i}`;
+            btn.className = 'number-box'; btn.innerText = i; btn.id = `num-btn-${i}`;
             btn.onclick = () => selectNumber(i, btn);
             grid.appendChild(btn);
         }
     }
 
-    // --- SELECT NUMBER ---
     function selectNumber(num, clickedBtn) {
         currentNumber = num;
         document.querySelectorAll('#numberGrid .number-box').forEach(b => b.classList.remove('active'));
         clickedBtn.classList.add('active');
         clickedBtn.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        lookupStudent();
-    }
-
-    // --- LOOKUP STUDENT IN MASTER LIST ---
-    function lookupStudent() {
-        if (!currentClass || !currentNumber) return;
-
-        currentStudentObj = masterStudentList.find(s => 
-            s.CLS_NAME === currentClass && parseInt(s.CLASS_NO) === parseInt(currentNumber)
-        );
-
+        
+        currentStudentObj = masterStudentList.find(s => s.CleanClass === currentClass && s.ClassNo === parseInt(currentNumber));
         updateProfileCard();
     }
 
-    // --- UPDATE ID CARD ---
     function updateProfileCard() {
         const card = document.getElementById('studentProfileCard');
         const statusLabel = document.getElementById('profileStatus');
@@ -396,17 +275,14 @@
 
         if (currentClass && currentNumber) {
             if (currentStudentObj) {
-                const enName = currentStudentObj.EN_NAME || "Unknown";
-                const chName = currentStudentObj.CH_NAME || "";
-                
                 card.classList.remove('empty');
-                statusLabel.innerText = `Currently Entering: ${currentClass} No. ${currentNumber}`;
-                nameDisplay.innerText = `${enName} ${chName}`;
+                statusLabel.innerText = `Ready: ${currentClass} No. ${currentNumber}`;
+                nameDisplay.innerText = `${currentStudentObj.EnName} ${currentStudentObj.ChName}`;
                 nameDisplay.style.color = "#064E3B"; 
             } else {
                 card.classList.remove('empty');
-                statusLabel.innerText = `⚠️ Missing Data: ${currentClass} No. ${currentNumber}`;
-                nameDisplay.innerText = "No student found in Server for this number";
+                statusLabel.innerText = `⚠️ Missing Data`;
+                nameDisplay.innerText = "Student not in Server Template";
                 nameDisplay.style.color = "#EF4444"; 
             }
         } else {
@@ -417,114 +293,95 @@
         }
     }
 
-    // --- SAVE DATA TO LOCAL STORAGE ---
     function saveData() {
+        if (!currentClass || !currentNumber || !currentStudentObj) return alert("⚠️ Please tap a valid student.");
+
         const pushUp = document.getElementById('pushUp').value;
         const sitUp = document.getElementById('sitUp').value;
         const sitReach = document.getElementById('sitReach').value;
         const run9Min = document.getElementById('run9Min').value;
 
-        if (!currentClass || !currentNumber) {
-            alert("⚠️ Please tap a Class and a Class Number first.");
-            return;
-        }
-
-        if (!pushUp && !sitUp && !sitReach && !run9Min) {
-            alert("⚠️ Please enter at least one fitness test result.");
-            return;
-        }
-
-        const studentName = currentStudentObj ? currentStudentObj.EN_NAME : "Unknown";
+        if (!pushUp && !sitUp && !sitReach && !run9Min) return alert("⚠️ Enter at least one result.");
 
         const newRecord = {
-            "Class": currentClass,
-            "Class Number": currentNumber,
-            "English Name": studentName,
-            "Chinese Name": currentStudentObj ? currentStudentObj.CH_NAME : "",
-            "Push up": pushUp,
-            "Sit up": sitUp,
-            "Sit & Reach": sitReach,
-            "9-min run": run9Min,
-            "Timestamp": new Date().toLocaleString()
+            Class: currentClass,
+            ClassNumber: currentNumber,
+            PushUp: pushUp,
+            SitUp: sitUp,
+            SitReach: sitReach,
+            Run9Min: run9Min
         };
 
-        const existingIndex = savedRecords.findIndex(r => r.Class === currentClass && r["Class Number"] === currentNumber);
-        
-        if (existingIndex > -1) {
-            if(confirm("This student already has data saved. Overwrite?")) {
-                savedRecords[existingIndex] = newRecord;
-            } else { return; }
-        } else {
-            savedRecords.push(newRecord);
-        }
+        const existingIndex = savedRecords.findIndex(r => r.Class === currentClass && r.ClassNumber === currentNumber);
+        if (existingIndex > -1) savedRecords[existingIndex] = newRecord;
+        else savedRecords.push(newRecord);
 
         localStorage.setItem('fitnessRecords', JSON.stringify(savedRecords));
         updateRecordCount();
 
-        // Clear input boxes
-        document.getElementById('pushUp').value = '';
-        document.getElementById('sitUp').value = '';
-        document.getElementById('sitReach').value = '';
-        document.getElementById('run9Min').value = '';
-
-        // Flash screen green
+        // Clear UI
+        ['pushUp', 'sitUp', 'sitReach', 'run9Min'].forEach(id => document.getElementById(id).value = '');
         document.body.style.backgroundColor = "#dcfce7";
-        setTimeout(() => { document.body.style.backgroundColor = "var(--background)"; }, 300);
+        setTimeout(() => document.body.style.backgroundColor = "var(--background)", 300);
 
-        // --- AUTO-NEXT STUDENT LOGIC ---
-        const nextNum = parseInt(currentNumber) + 1;
-        const nextBtn = document.getElementById(`num-btn-${nextNum}`);
-        
-        if (nextBtn) {
-            nextBtn.click(); 
-        } else {
-            currentNumber = null;
-            currentStudentObj = null;
+        // Auto-Next
+        const nextBtn = document.getElementById(`num-btn-${parseInt(currentNumber) + 1}`);
+        if (nextBtn) nextBtn.click(); 
+        else {
+            currentNumber = null; currentStudentObj = null;
             document.querySelectorAll('#numberGrid .number-box').forEach(b => b.classList.remove('active'));
             updateProfileCard();
         }
     }
 
-    // --- EXPORT TO EXCEL ---
+    // --- MAGIC EXPORT: INJECTS DATA INTO ORIGINAL FILE ---
     function exportData() {
-        if (savedRecords.length === 0) {
-            alert("❌ No records to export.");
-            return;
-        }
-        
-        // Sort beautifully by Class then Number
-        const sortedRecords = [...savedRecords].sort((a, b) => {
-            if (a.Class !== b.Class) return a.Class.localeCompare(b.Class);
-            return parseInt(a["Class Number"]) - parseInt(b["Class Number"]);
+        if (!masterWorkbookBuffer) return alert("❌ Wait for the server template to load first!");
+        if (savedRecords.length === 0) return alert("❌ No records saved on this iPad.");
+
+        // 1. Re-open the original downloaded workbook
+        const wb = XLSX.read(masterWorkbookBuffer, {type: 'array'});
+
+        // 2. Safely inject a cell value
+        const injectCell = (sheet, r, c, val) => {
+            if (c !== -1 && val !== "" && val !== null && val !== undefined) {
+                const cellAddress = XLSX.utils.encode_cell({r: r, c: c});
+                sheet[cellAddress] = { t: 'n', v: Number(val) }; // 'n' stands for Number format
+            }
+        };
+
+        // 3. Inject all saved data into exact coordinates
+        savedRecords.forEach(record => {
+            const studentMap = masterStudentList.find(s => s.CleanClass === record.Class && s.ClassNo === parseInt(record.ClassNumber));
+            
+            if (studentMap) {
+                const ws = wb.Sheets[studentMap.SheetName]; // Gets exact tab, e.g. "1A "
+                if (!ws) return;
+
+                injectCell(ws, studentMap.RowIndex, studentMap.ColPushUp, record.PushUp);
+                injectCell(ws, studentMap.RowIndex, studentMap.ColSitUp, record.SitUp);
+                injectCell(ws, studentMap.RowIndex, studentMap.ColSitReach, record.SitReach);
+                injectCell(ws, studentMap.RowIndex, studentMap.ColRun9Min, record.Run9Min);
+            }
         });
 
-        const worksheet = XLSX.utils.json_to_sheet(sortedRecords);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Fitness Results");
-        
-        const activeTerm = document.getElementById('termSelector').options[document.getElementById('termSelector').selectedIndex].text;
-        XLSX.writeFile(workbook, `Fitness_${activeTerm.replace(/\s+/g, '_')}_Data.xlsx`);
+        // 4. Download modified original file
+        const fileName = document.getElementById('termSelector').value;
+        const outName = "COMPLETED_FITNESS_" + fileName;
+        XLSX.writeFile(wb, outName);
     }
 
-    // --- CLEAR MEMORY ---
     function clearAllData() {
-        const passcode = prompt("🔒 Admin Access Required.\nPlease enter the passcode to clear memory:");
-        if (passcode !== "8888") {
-            if (passcode !== null) alert("❌ Incorrect passcode.");
-            return; 
-        }
-        if (confirm("⚠️ WARNING: This will completely clear ALL saved fitness data from this iPad. Proceed?")) {
+        const passcode = prompt("🔒 Admin Access Required.\nEnter passcode to clear memory:");
+        if (passcode !== "8888") return passcode !== null && alert("❌ Incorrect passcode.");
+        if (confirm("⚠️ Clear ALL saved fitness data?")) {
             savedRecords = [];
             localStorage.removeItem('fitnessRecords');
             updateRecordCount();
-            alert("✅ Memory successfully cleared!");
+            alert("✅ Memory cleared!");
         }
     }
-
-    function updateRecordCount() {
-        document.getElementById('recordCount').innerText = savedRecords.length;
-    }
+    function updateRecordCount() { document.getElementById('recordCount').innerText = savedRecords.length; }
 </script>
-
 </body>
 </html>
