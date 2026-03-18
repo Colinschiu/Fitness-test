@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PE Fitness Test Data Entry</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --background: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            color: var(--primary);
+            margin-top: 0;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 18px;
+            color: #334155;
+        }
+
+        /* --- CLASS SELECTION BUTTONS --- */
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 4px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #f8fafc;
+        }
+
+        .tap-btn {
+            padding: 12px 8px;
+            font-size: 16px;
+            font-weight: 600;
+            background: #ffffff;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .tap-btn:active { transform: scale(0.95); }
+        .tap-btn.active {
+            background-color: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+        }
+
+        /* --- NUMBER GRID STYLES --- */
+        .number-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); 
+            gap: 12px; 
+            max-height: 200px; 
+            overflow-y: auto; 
+            padding: 4px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #f8fafc;
+        }
+        
+        .number-box { 
+            display: flex; align-items: center; justify-content: center; 
+            height: 55px; background-color: #FFFFFF; 
+            border: 2px solid var(--border); border-radius: 12px; 
+            font-size: 18px; font-weight: 600; color: #64748b; 
+            cursor: pointer; transition: all 0.15s ease-in-out; 
+        }
+        
+        .number-box:active { transform: scale(0.95); }
+        .number-box.active { 
+            background-color: var(--primary); border-color: var(--primary); 
+            color: white; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3); transform: scale(1.05); 
+        }
+
+        /* --- STUDENT PROFILE CARD --- */
+        .id-card { 
+            background: linear-gradient(to right, #F0FDF4, #FFFFFF); 
+            border: 2px solid var(--success); padding: 20px; border-radius: 12px;
+            display: flex; align-items: center; transition: all 0.3s ease; 
+            margin-bottom: 24px;
+        }
+        .id-card.empty { 
+            background: linear-gradient(to right, #f8fafc, #FFFFFF); 
+            border: 2px dashed #cbd5e1; 
+        }
+        .id-card .avatar { font-size: 45px; margin-right: 20px; }
+        .id-card .status-label { 
+            color: var(--success); font-size: 13px; font-weight: 700; 
+            text-transform: uppercase; margin: 0 0 4px 0; letter-spacing: 1px;
+        }
+        .id-card.empty .status-label { color: #64748b; }
+        .id-card h3 { color: #064E3B; font-size: 22px; margin: 0; font-family: 'Montserrat', sans-serif; }
+        .id-card.empty h3 { color: #64748b; font-size: 18px; font-weight: 500; }
+
+        /* --- INPUTS & BUTTONS --- */
+        input {
+            width: 100%; padding: 16px; font-size: 18px;
+            border: 2px solid var(--border); border-radius: 10px;
+            box-sizing: border-box; background-color: #fff;
+            transition: border-color 0.2s;
+        }
+        input:focus { outline: none; border-color: var(--primary); }
+
+        .fitness-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+            background-color: #f1f5f9; padding: 20px; border-radius: 12px; margin-bottom: 24px;
+        }
+
+        .action-btn {
+            width: 100%; padding: 18px; font-size: 20px; font-weight: bold;
+            color: white; border: none; border-radius: 10px; cursor: pointer;
+            margin-bottom: 12px; transition: opacity 0.2s;
+        }
+        .action-btn:active { opacity: 0.8; }
+        .btn-save { background-color: var(--success); }
+        .btn-export { background-color: var(--primary); }
+        .btn-clear { background-color: var(--danger); margin-top: 20px;}
+
+        .status-bar {
+            text-align: center; font-size: 16px; color: #64748b;
+            margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏃‍♂️ Fitness Test Data Entry</h1>
+
+    <div class="form-group">
+        <label>1. Select Class</label>
+        <div id="classGrid" class="class-grid"></div>
+    </div>
+
+    <div class="form-group">
+        <label>2. Select Class Number <span id="maxCountLabel" style="font-weight: 400; font-size: 14px; color: #64748b;"></span></label>
+        <div id="numberGrid" class="number-grid"></div>
+    </div>
+
+    <div class="id-card empty" id="studentProfileCard">
+        <div class="avatar">👤</div>
+        <div class="info">
+            <p class="status-label" id="profileStatus">Awaiting Selection</p>
+            <h3 id="displayName">Please select Class & Number</h3>
+        </div>
+    </div>
+
+    <div class="fitness-grid">
+        <div>
+            <label for="pushUp">Push Up (Reps)</label>
+            <input type="number" id="pushUp" inputmode="decimal" placeholder="e.g. 25">
+        </div>
+        <div>
+            <label for="sitUp">Sit Up (Reps)</label>
+            <input type="number" id="sitUp" inputmode="decimal" placeholder="e.g. 30">
+        </div>
+        <div>
+            <label for="sitReach">Sit & Reach (cm)</label>
+            <input type="number" id="sitReach" inputmode="decimal" step="0.1" placeholder="e.g. 15.5">
+        </div>
+        <div>
+            <label for="run9Min">9-Min Run (Meters)</label>
+            <input type="number" id="run9Min" inputmode="decimal" placeholder="e.g. 1630">
+        </div>
+    </div>
+
+    <button class="action-btn btn-save" onclick="saveData()">💾 Save Record & Next Student</button>
+    <button class="action-btn btn-export" onclick="exportData()">📊 Export to Excel</button>
+    
+    <div class="status-bar">
+        Records saved on this iPad: <strong id="recordCount">0</strong>
+    </div>
+
+    <button class="action-btn btn-clear" onclick="clearAllData()">🗑️ Clear iPad Memory</button>
+</div>
+
+<script>
+    // --- APP STATE ---
+    let masterStudentList = []; 
+    let savedRecords = JSON.parse(localStorage.getItem('fitnessRecords')) || [];
+    let currentClass = null;
+    let currentNumber = null;
+    let currentStudentObj = null;
+
+    const CLASSES = [
+        "1A", "1B", "1C", "1D", 
+        "2A", "2B", "2C", "2D", 
+        "3A", "3B", "3C", "3D", 
+        "4A", "4B", "4C", "4D", 
+        "5A", "5B", "5C", "5D",
+        "6A", "6B", "6C", "6D"
+    ];
+
+    // --- INITIALIZATION ---
+    window.onload = function() {
+        updateRecordCount();
+        renderClassButtons();
+        renderNumberGrid(40); // Default to 40 until class is picked
+        fetchMasterList();
+    };
+
+    // --- RENDER CLASS BUTTONS ---
+    function renderClassButtons() {
+        const grid = document.getElementById('classGrid');
+        grid.innerHTML = '';
+        CLASSES.forEach(cls => {
+            const btn = document.createElement('button');
+            btn.className = 'tap-btn';
+            btn.innerText = cls;
+            btn.onclick = () => selectClass(cls, btn);
+            grid.appendChild(btn);
+        });
+    }
+
+    // --- SELECT CLASS ---
+    function selectClass(cls, clickedBtn) {
+        currentClass = cls;
+        currentNumber = null;
+        currentStudentObj = null;
+
+        // Active state styling
+        document.querySelectorAll('#classGrid .tap-btn').forEach(b => b.classList.remove('active'));
+        clickedBtn.classList.add('active');
+
+        // Find exactly how many students are in this class from the Master List
+        let maxNum = 40; // fallback
+        if (masterStudentList.length > 0) {
+            const classStudents = masterStudentList.filter(s => s.CLS_NAME === cls || s.Class === cls);
+            if (classStudents.length > 0) {
+                // Find highest class number
+                maxNum = Math.max(...classStudents.map(s => parseInt(s.CLASS_NO || s.Class_No || 0)));
+                if (isNaN(maxNum) || maxNum === 0) maxNum = 40;
+            }
+        }
+
+        document.getElementById('maxCountLabel').innerText = `(1 to ${maxNum})`;
+        renderNumberGrid(maxNum);
+        updateProfileCard();
+    }
+
+    // --- RENDER NUMBER BUTTONS ---
+    function renderNumberGrid(maxCount) {
+        const grid = document.getElementById('numberGrid');
+        grid.innerHTML = '';
+
+        for (let i = 1; i <= maxCount; i++) {
+            const btn = document.createElement('div');
+            btn.className = 'number-box';
+            btn.innerText = i;
+            btn.id = `num-btn-${i}`;
+            btn.onclick = () => selectNumber(i, btn);
+            grid.appendChild(btn);
+        }
+    }
+
+    // --- SELECT NUMBER ---
+    function selectNumber(num, clickedBtn) {
+        currentNumber = num;
+
+        // Active state styling
+        document.querySelectorAll('#numberGrid .number-box').forEach(b => b.classList.remove('active'));
+        clickedBtn.classList.add('active');
+        
+        // Auto-scroll the grid to the selected number
+        clickedBtn.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+        lookupStudent();
+    }
+
+    // --- LOOKUP STUDENT IN MASTER LIST ---
+    function lookupStudent() {
+        if (!currentClass || !currentNumber) return;
+
+        // Find student matching Class Name AND Class Number
+        currentStudentObj = masterStudentList.find(s => 
+            (s.CLS_NAME === currentClass || s.Class === currentClass) && 
+            (parseInt(s.CLASS_NO) === parseInt(currentNumber) || parseInt(s.Class_No) === parseInt(currentNumber))
+        );
+
+        updateProfileCard();
+    }
+
+    // --- UPDATE ID CARD ---
+    function updateProfileCard() {
+        const card = document.getElementById('studentProfileCard');
+        const statusLabel = document.getElementById('profileStatus');
+        const nameDisplay = document.getElementById('displayName');
+
+        if (currentClass && currentNumber) {
+            if (currentStudentObj) {
+                const enName = currentStudentObj.EN_NAME || currentStudentObj.Name || "Unknown";
+                const chName = currentStudentObj.CH_NAME || "";
+                
+                card.classList.remove('empty');
+                statusLabel.innerText = `Currently Entering: ${currentClass} No. ${currentNumber}`;
+                nameDisplay.innerText = `${enName} ${chName}`;
+                nameDisplay.style.color = "#064E3B"; 
+            } else {
+                card.classList.remove('empty');
+                statusLabel.innerText = `⚠️ Missing Data: ${currentClass} No. ${currentNumber}`;
+                nameDisplay.innerText = "No student found in Server for this number";
+                nameDisplay.style.color = "#EF4444"; 
+            }
+        } else {
+            card.classList.add('empty');
+            statusLabel.innerText = "Awaiting Selection";
+            nameDisplay.innerText = "Please select Class & Number";
+            nameDisplay.style.color = "#64748b";
+        }
+    }
+
+    // --- FETCH MASTER EXCEL ---
+    async function fetchMasterList() {
+        try {
+            // Appends timestamp to prevent iPad cache issues
+            const cacheBuster = '?t=' + new Date().getTime();
+            const response = await fetch('./student_list.xlsx' + cacheBuster); 
+            
+            if (!response.ok) throw new Error("Could not find master list.");
+            
+            const arrayBuffer = await response.arrayBuffer();
+            const workbook = XLSX.read(arrayBuffer, {type: 'array'});
+            
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            masterStudentList = XLSX.utils.sheet_to_json(worksheet);
+            console.log("Master list loaded successfully!");
+        } catch (error) {
+            console.error("Error loading master list.", error);
+        }
+    }
+
+    // --- SAVE DATA TO LOCAL STORAGE ---
+    function saveData() {
+        const pushUp = document.getElementById('pushUp').value;
+        const sitUp = document.getElementById('sitUp').value;
+        const sitReach = document.getElementById('sitReach').value;
+        const run9Min = document.getElementById('run9Min').value;
+
+        if (!currentClass || !currentNumber) {
+            alert("⚠️ Please tap a Class and a Class Number first.");
+            return;
+        }
+
+        if (!pushUp && !sitUp && !sitReach && !run9Min) {
+            alert("⚠️ Please enter at least one fitness test result.");
+            return;
+        }
+
+        const studentName = currentStudentObj ? (currentStudentObj.EN_NAME || currentStudentObj.Name) : "Unknown";
+
+        const newRecord = {
+            ...(currentStudentObj || {}), // Keep their internal IDs if they exist
+            "Class": currentClass,
+            "Class Number": currentNumber,
+            "Name": studentName,
+            "Push up": pushUp,
+            "Sit up": sitUp,
+            "Sit & Reach": sitReach,
+            "9-min run": run9Min,
+            "Timestamp": new Date().toLocaleString()
+        };
+
+        const existingIndex = savedRecords.findIndex(r => r.Class === currentClass && r["Class Number"] === currentNumber);
+        
+        if (existingIndex > -1) {
+            if(confirm("This student already has data saved. Overwrite?")) {
+                savedRecords[existingIndex] = newRecord;
+            } else { return; }
+        } else {
+            savedRecords.push(newRecord);
+        }
+
+        localStorage.setItem('fitnessRecords', JSON.stringify(savedRecords));
+        updateRecordCount();
+
+        // Clear input boxes
+        document.getElementById('pushUp').value = '';
+        document.getElementById('sitUp').value = '';
+        document.getElementById('sitReach').value = '';
+        document.getElementById('run9Min').value = '';
+
+        // Flash screen green
+        document.body.style.backgroundColor = "#dcfce7";
+        setTimeout(() => { document.body.style.backgroundColor = "var(--background)"; }, 300);
+
+        // --- AUTO-NEXT STUDENT LOGIC ---
+        const nextNum = parseInt(currentNumber) + 1;
+        const nextBtn = document.getElementById(`num-btn-${nextNum}`);
+        
+        if (nextBtn) {
+            nextBtn.click(); // Automatically clicks the next number button
+        } else {
+            // Reached the end of the class limit
+            currentNumber = null;
+            currentStudentObj = null;
+            document.querySelectorAll('#numberGrid .number-box').forEach(b => b.classList.remove('active'));
+            updateProfileCard();
+        }
+    }
+
+    // --- EXPORT TO EXCEL ---
+    function exportData() {
+        if (savedRecords.length === 0) {
+            alert("❌ No records to export.");
+            return;
+        }
+        
+        // Sort beautifully by Class then Number
+        const sortedRecords = [...savedRecords].sort((a, b) => {
+            if (a.Class !== b.Class) return a.Class.localeCompare(b.Class);
+            return parseInt(a["Class Number"]) - parseInt(b["Class Number"]);
+        });
+
+        const worksheet = XLSX.utils.json_to_sheet(sortedRecords);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Fitness Results");
+        
+        const dateStr = new Date().toISOString().slice(0,10);
+        XLSX.writeFile(workbook, `Fitness_Results_${dateStr}.xlsx`);
+    }
+
+    // --- CLEAR MEMORY ---
+    function clearAllData() {
+        const passcode = prompt("🔒 Admin Access Required.\nPlease enter the passcode to clear memory:");
+        if (passcode !== "8888") {
+            if (passcode !== null) alert("❌ Incorrect passcode.");
+            return; 
+        }
+        if (confirm("⚠️ WARNING: This will completely clear ALL saved fitness data from this iPad. Proceed?")) {
+            savedRecords = [];
+            localStorage.removeItem('fitnessRecords');
+            updateRecordCount();
+            alert("✅ Memory successfully cleared!");
+        }
+    }
+
+    function updateRecordCount() {
+        document.getElementById('recordCount').innerText = savedRecords.length;
+    }
+</script>
+
+</body>
+</html>
