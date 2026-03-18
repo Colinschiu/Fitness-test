@@ -45,63 +45,49 @@
             font-size: 28px;
         }
 
-        .form-group {
-            margin-bottom: 24px;
-        }
+        .form-group { margin-bottom: 24px; }
 
         label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 12px;
-            font-size: 18px;
-            color: #334155;
+            display: block; font-weight: 600; margin-bottom: 12px;
+            font-size: 18px; color: #334155;
+        }
+
+        /* --- DATABASE SELECTOR --- */
+        .db-upload {
+            background: #EFF6FF; padding: 15px; border-radius: 10px; 
+            border: 2px dashed #93c5fd; margin-bottom: 24px;
+        }
+        select.term-selector {
+            padding: 8px 12px; border-radius: 8px; border: 1px solid var(--primary);
+            background: white; color: var(--primary); font-weight: 600;
+            font-size: 16px; cursor: pointer; outline: none; width: 100%; max-width: 300px;
         }
 
         /* --- CLASS SELECTION BUTTONS --- */
         .class-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-            gap: 10px;
-            max-height: 150px;
-            overflow-y: auto;
-            padding: 4px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: #f8fafc;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 10px; max-height: 150px; overflow-y: auto; padding: 4px;
+            border: 1px solid var(--border); border-radius: 10px; background: #f8fafc;
         }
 
         .tap-btn {
-            padding: 12px 8px;
-            font-size: 16px;
-            font-weight: 600;
-            background: #ffffff;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            color: var(--text);
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s ease;
+            padding: 12px 8px; font-size: 16px; font-weight: 600;
+            background: #ffffff; border: 2px solid var(--border);
+            border-radius: 8px; color: var(--text); cursor: pointer;
+            text-align: center; transition: all 0.2s ease;
         }
 
         .tap-btn:active { transform: scale(0.95); }
         .tap-btn.active {
-            background-color: var(--primary);
-            color: #ffffff;
-            border-color: var(--primary);
-            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+            background-color: var(--primary); color: #ffffff;
+            border-color: var(--primary); box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
         }
 
         /* --- NUMBER GRID STYLES --- */
         .number-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); 
-            gap: 12px; 
-            max-height: 200px; 
-            overflow-y: auto; 
-            padding: 4px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: #f8fafc;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); 
+            gap: 12px; max-height: 200px; overflow-y: auto; padding: 4px;
+            border: 1px solid var(--border); border-radius: 10px; background: #f8fafc;
         }
         
         .number-box { 
@@ -173,6 +159,18 @@
 <div class="container">
     <h1>🏃‍♂️ Fitness Test Data Entry</h1>
 
+    <div class="db-upload">
+        <label style="color: var(--primary); font-size: 16px; margin-bottom: 8px;">📥 Active Server Database:</label>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <select id="termSelector" class="term-selector" onchange="fetchMasterList()">
+                <option value="term1.xlsx">1st Term Class List</option>
+                <option value="term2.xlsx">2nd Term Class List</option>
+            </select>
+            <button type="button" onclick="fetchMasterList()" style="padding: 8px 12px; font-size: 14px; background: white; color: var(--primary); border: 1px solid var(--primary); border-radius: 8px; cursor: pointer;">🔄 Refresh File</button>
+        </div>
+        <p id="dbStatus" style="margin: 10px 0 0 0; font-weight: bold; font-size: 14px; color: #d97706;">⏳ Waiting for connection...</p>
+    </div>
+
     <div class="form-group">
         <label>1. Select Class</label>
         <div id="classGrid" class="class-grid"></div>
@@ -241,9 +239,83 @@
     window.onload = function() {
         updateRecordCount();
         renderClassButtons();
-        renderNumberGrid(40); // Default to 40 until class is picked
-        fetchMasterList();
+        renderNumberGrid(40); 
+        fetchMasterList(); // Fetches term1.xlsx by default
     };
+
+    // --- FETCH MASTER EXCEL WITH SMART PARSER ---
+    async function fetchMasterList() {
+        const fileName = document.getElementById('termSelector').value;
+        const statusText = document.getElementById('dbStatus');
+        
+        statusText.innerText = `⏳ Fetching ${fileName}...`;
+        statusText.style.color = "#d97706"; // Warning orange
+
+        try {
+            const cacheBuster = '?t=' + new Date().getTime();
+            const response = await fetch('./' + fileName + cacheBuster); 
+            
+            if (!response.ok) throw new Error("File not found");
+            
+            const arrayBuffer = await response.arrayBuffer();
+            const workbook = XLSX.read(arrayBuffer, {type: 'array'});
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            
+            // Get raw array data to bypass weird Excel headers
+            const rows = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+            
+            let cleanList = [];
+            let clsIdx = -1, numIdx = -1, enIdx = -1, chIdx = -1;
+
+            for (let i = 0; i < rows.length; i++) {
+                const cols = rows[i];
+                if (!cols || cols.length === 0) continue;
+
+                if (clsIdx === -1 && numIdx === -1) {
+                    for(let j=0; j<cols.length; j++) {
+                        const val = String(cols[j] || '').trim().toUpperCase();
+                        if (val === 'CLS_NAME') clsIdx = j;
+                        if (val === 'CLASS_NO') numIdx = j;
+                        if (val === 'EN_NAME') enIdx = j;
+                        if (val === 'CH_NAME') chIdx = j;
+                    }
+                }
+
+                if (clsIdx !== -1 && numIdx !== -1 && enIdx !== -1) {
+                    const clsName = String(cols[clsIdx] || '').trim().toUpperCase();
+                    const classNo = parseInt(String(cols[numIdx] || '').trim(), 10);
+                    const enName = String(cols[enIdx] || '').trim();
+                    const chName = chIdx !== -1 ? String(cols[chIdx] || '').trim() : "";
+
+                    if (/^[1-6][A-D]$/.test(clsName) && !isNaN(classNo)) {
+                        cleanList.push({
+                            CLS_NAME: clsName,
+                            CLASS_NO: classNo,
+                            EN_NAME: enName,
+                            CH_NAME: chName
+                        });
+                    }
+                }
+            }
+
+            masterStudentList = cleanList;
+            
+            statusText.innerText = `✅ Connected (${masterStudentList.length} students loaded)`;
+            statusText.style.color = "var(--success)";
+
+            // If a class was already selected, refresh the numbers
+            if (currentClass) {
+                const activeClassBtn = document.querySelector('#classGrid .tap-btn.active');
+                if (activeClassBtn) selectClass(currentClass, activeClassBtn);
+            }
+
+        } catch (error) {
+            console.error(error);
+            statusText.innerText = `❌ Error: Could not find ${fileName} on GitHub.`;
+            statusText.style.color = "var(--danger)";
+        }
+    }
 
     // --- RENDER CLASS BUTTONS ---
     function renderClassButtons() {
@@ -264,17 +336,14 @@
         currentNumber = null;
         currentStudentObj = null;
 
-        // Active state styling
         document.querySelectorAll('#classGrid .tap-btn').forEach(b => b.classList.remove('active'));
         clickedBtn.classList.add('active');
 
-        // Find exactly how many students are in this class from the Master List
-        let maxNum = 40; // fallback
+        let maxNum = 40; 
         if (masterStudentList.length > 0) {
-            const classStudents = masterStudentList.filter(s => s.CLS_NAME === cls || s.Class === cls);
+            const classStudents = masterStudentList.filter(s => s.CLS_NAME === cls);
             if (classStudents.length > 0) {
-                // Find highest class number
-                maxNum = Math.max(...classStudents.map(s => parseInt(s.CLASS_NO || s.Class_No || 0)));
+                maxNum = Math.max(...classStudents.map(s => parseInt(s.CLASS_NO)));
                 if (isNaN(maxNum) || maxNum === 0) maxNum = 40;
             }
         }
@@ -302,14 +371,9 @@
     // --- SELECT NUMBER ---
     function selectNumber(num, clickedBtn) {
         currentNumber = num;
-
-        // Active state styling
         document.querySelectorAll('#numberGrid .number-box').forEach(b => b.classList.remove('active'));
         clickedBtn.classList.add('active');
-        
-        // Auto-scroll the grid to the selected number
         clickedBtn.scrollIntoView({ behavior: "smooth", block: "nearest" });
-
         lookupStudent();
     }
 
@@ -317,10 +381,8 @@
     function lookupStudent() {
         if (!currentClass || !currentNumber) return;
 
-        // Find student matching Class Name AND Class Number
         currentStudentObj = masterStudentList.find(s => 
-            (s.CLS_NAME === currentClass || s.Class === currentClass) && 
-            (parseInt(s.CLASS_NO) === parseInt(currentNumber) || parseInt(s.Class_No) === parseInt(currentNumber))
+            s.CLS_NAME === currentClass && parseInt(s.CLASS_NO) === parseInt(currentNumber)
         );
 
         updateProfileCard();
@@ -334,7 +396,7 @@
 
         if (currentClass && currentNumber) {
             if (currentStudentObj) {
-                const enName = currentStudentObj.EN_NAME || currentStudentObj.Name || "Unknown";
+                const enName = currentStudentObj.EN_NAME || "Unknown";
                 const chName = currentStudentObj.CH_NAME || "";
                 
                 card.classList.remove('empty');
@@ -355,27 +417,6 @@
         }
     }
 
-    // --- FETCH MASTER EXCEL ---
-    async function fetchMasterList() {
-        try {
-            // Appends timestamp to prevent iPad cache issues
-            const cacheBuster = '?t=' + new Date().getTime();
-            const response = await fetch('./student_list.xlsx' + cacheBuster); 
-            
-            if (!response.ok) throw new Error("Could not find master list.");
-            
-            const arrayBuffer = await response.arrayBuffer();
-            const workbook = XLSX.read(arrayBuffer, {type: 'array'});
-            
-            const firstSheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheetName];
-            masterStudentList = XLSX.utils.sheet_to_json(worksheet);
-            console.log("Master list loaded successfully!");
-        } catch (error) {
-            console.error("Error loading master list.", error);
-        }
-    }
-
     // --- SAVE DATA TO LOCAL STORAGE ---
     function saveData() {
         const pushUp = document.getElementById('pushUp').value;
@@ -393,13 +434,13 @@
             return;
         }
 
-        const studentName = currentStudentObj ? (currentStudentObj.EN_NAME || currentStudentObj.Name) : "Unknown";
+        const studentName = currentStudentObj ? currentStudentObj.EN_NAME : "Unknown";
 
         const newRecord = {
-            ...(currentStudentObj || {}), // Keep their internal IDs if they exist
             "Class": currentClass,
             "Class Number": currentNumber,
-            "Name": studentName,
+            "English Name": studentName,
+            "Chinese Name": currentStudentObj ? currentStudentObj.CH_NAME : "",
             "Push up": pushUp,
             "Sit up": sitUp,
             "Sit & Reach": sitReach,
@@ -435,9 +476,8 @@
         const nextBtn = document.getElementById(`num-btn-${nextNum}`);
         
         if (nextBtn) {
-            nextBtn.click(); // Automatically clicks the next number button
+            nextBtn.click(); 
         } else {
-            // Reached the end of the class limit
             currentNumber = null;
             currentStudentObj = null;
             document.querySelectorAll('#numberGrid .number-box').forEach(b => b.classList.remove('active'));
@@ -462,8 +502,8 @@
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Fitness Results");
         
-        const dateStr = new Date().toISOString().slice(0,10);
-        XLSX.writeFile(workbook, `Fitness_Results_${dateStr}.xlsx`);
+        const activeTerm = document.getElementById('termSelector').options[document.getElementById('termSelector').selectedIndex].text;
+        XLSX.writeFile(workbook, `Fitness_${activeTerm.replace(/\s+/g, '_')}_Data.xlsx`);
     }
 
     // --- CLEAR MEMORY ---
