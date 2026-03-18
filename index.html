@@ -6,7 +6,7 @@
     <title>PE Fitness Test Data Entry</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
-    
+   
     <style>
         :root {
             --primary: #2563eb; --success: #16a34a; --danger: #dc2626;
@@ -17,20 +17,23 @@
         h1 { font-family: 'Montserrat', sans-serif; text-align: center; color: var(--primary); margin-top: 0; font-size: 28px; }
         .form-group { margin-bottom: 24px; }
         label { display: block; font-weight: 600; margin-bottom: 12px; font-size: 18px; color: #334155; }
-        
+       
         .db-upload { background: #EFF6FF; padding: 15px; border-radius: 10px; border: 2px dashed #93c5fd; margin-bottom: 24px; }
         select.term-selector { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--primary); background: white; color: var(--primary); font-weight: 600; font-size: 16px; cursor: pointer; outline: none; width: 100%; max-width: 300px; }
-        
+       
         .class-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; max-height: 150px; overflow-y: auto; padding: 4px; border: 1px solid var(--border); border-radius: 10px; background: #f8fafc; }
         .tap-btn { padding: 12px 8px; font-size: 16px; font-weight: 600; background: #ffffff; border: 2px solid var(--border); border-radius: 8px; color: var(--text); cursor: pointer; text-align: center; transition: all 0.2s ease; }
         .tap-btn:active { transform: scale(0.95); }
         .tap-btn.active { background-color: var(--primary); color: #ffffff; border-color: var(--primary); box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3); }
-        
+       
+        .test-mode-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; justify-content: center; }
+        .test-mode { min-width: 110px; padding: 14px 16px; font-size: 17px; }
+       
         .number-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); gap: 12px; max-height: 200px; overflow-y: auto; padding: 4px; border: 1px solid var(--border); border-radius: 10px; background: #f8fafc; }
         .number-box { display: flex; align-items: center; justify-content: center; height: 55px; background-color: #FFFFFF; border: 2px solid var(--border); border-radius: 12px; font-size: 18px; font-weight: 600; color: #64748b; cursor: pointer; transition: all 0.15s ease-in-out; }
         .number-box:active { transform: scale(0.95); }
         .number-box.active { background-color: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3); transform: scale(1.05); }
-        
+       
         .id-card { background: linear-gradient(to right, #F0FDF4, #FFFFFF); border: 2px solid var(--success); padding: 20px; border-radius: 12px; display: flex; align-items: center; transition: all 0.3s ease; margin-bottom: 24px; }
         .id-card.empty { background: linear-gradient(to right, #f8fafc, #FFFFFF); border: 2px dashed #cbd5e1; }
         .id-card .avatar { font-size: 45px; margin-right: 20px; }
@@ -38,11 +41,12 @@
         .id-card.empty .status-label { color: #64748b; }
         .id-card h3 { color: #064E3B; font-size: 22px; margin: 0; font-family: 'Montserrat', sans-serif; }
         .id-card.empty h3 { color: #64748b; font-size: 18px; font-weight: 500; }
-        
-        input { width: 100%; padding: 16px; font-size: 18px; border: 2px solid var(--border); border-radius: 10px; box-sizing: border-box; background-color: #fff; transition: border-color 0.2s; }
-        input:focus { outline: none; border-color: var(--primary); }
-        .fitness-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background-color: #f1f5f9; padding: 20px; border-radius: 12px; margin-bottom: 24px; }
-        
+       
+        input[type="number"] { width: 100%; padding: 20px; font-size: 28px; border: 2px solid var(--border); border-radius: 12px; box-sizing: border-box; background-color: #fff; transition: border-color 0.2s, box-shadow 0.2s; text-align: center; }
+        input[type="number"]:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.15); }
+       
+        .single-input-area { max-width: 420px; margin: 0 auto 30px auto; }
+       
         .action-btn { width: 100%; padding: 18px; font-size: 20px; font-weight: bold; color: white; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 12px; transition: opacity 0.2s; }
         .action-btn:active { opacity: 0.8; }
         .btn-save { background-color: var(--success); }
@@ -52,7 +56,6 @@
     </style>
 </head>
 <body>
-
 <div class="container">
     <h1>🏃‍♂️ Fitness Test Data Entry</h1>
 
@@ -74,7 +77,17 @@
     </div>
 
     <div class="form-group">
-        <label>2. Select Class Number <span id="maxCountLabel" style="font-weight: 400; font-size: 14px; color: #64748b;"></span></label>
+        <label>2. Select Test Item</label>
+        <div class="test-mode-grid">
+            <button class="tap-btn test-mode active" data-item="pushUp">Push-ups</button>
+            <button class="tap-btn test-mode" data-item="sitUp">Sit-ups</button>
+            <button class="tap-btn test-mode" data-item="sitReach">Sit & Reach</button>
+            <button class="tap-btn test-mode" data-item="run9Min">9-min Run</button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>3. Select Class Number <span id="maxCountLabel" style="font-weight: 400; font-size: 14px; color: #64748b;"></span></label>
         <div id="numberGrid" class="number-grid"></div>
     </div>
 
@@ -86,53 +99,63 @@
         </div>
     </div>
 
-    <div class="fitness-grid">
-        <div>
-            <label for="pushUp">Push Up (Reps)</label>
-            <input type="number" id="pushUp" inputmode="decimal" placeholder="e.g. 25">
-        </div>
-        <div>
-            <label for="sitUp">Sit Up (Reps)</label>
-            <input type="number" id="sitUp" inputmode="decimal" placeholder="e.g. 30">
-        </div>
-        <div>
-            <label for="sitReach">Sit & Reach (cm)</label>
-            <input type="number" id="sitReach" inputmode="decimal" step="0.1" placeholder="e.g. 15.5">
-        </div>
-        <div>
-            <label for="run9Min">9-Min Run (Meters)</label>
-            <input type="number" id="run9Min" inputmode="decimal" placeholder="e.g. 1630">
-        </div>
+    <div class="single-input-area">
+        <label id="currentTestLabel">Push Up (Reps)</label>
+        <input type="number" id="currentValue" inputmode="decimal" placeholder="Enter value →" autofocus>
     </div>
 
-    <button class="action-btn btn-save" onclick="saveData()">💾 Save Record & Next Student</button>
+    <button class="action-btn btn-save" onclick="saveData()">💾 Save & Next Student</button>
     <button class="action-btn btn-export" onclick="exportData()">📊 Export to Original Excel Format</button>
-    
+   
     <div class="status-bar">
         Records saved on this iPad: <strong id="recordCount">0</strong>
     </div>
-
     <button class="action-btn btn-clear" onclick="clearAllData()">🗑️ Clear iPad Memory</button>
 </div>
 
 <script>
-    let masterWorkbookBuffer = null; // Stores the exact raw Excel file
-    let masterStudentList = []; // Maps exact cell coordinates
+    let masterWorkbookBuffer = null;
+    let masterStudentList = [];
     let savedRecords = JSON.parse(localStorage.getItem('fitnessRecords')) || [];
     let currentClass = null;
     let currentNumber = null;
     let currentStudentObj = null;
+    let currentItem = 'pushUp';
 
     const CLASSES = ["1A", "1B", "1C", "1D", "2A", "2B", "2C", "2D", "3A", "3B", "3C", "3D", "4A", "4B", "4C", "4D", "5A", "5B", "5C", "5D"];
+
+    const itemConfig = {
+        pushUp:   { label: "Push Up (Reps)",         placeholder: "e.g. 25",     field: "PushUp"   },
+        sitUp:    { label: "Sit Up (Reps)",          placeholder: "e.g. 30",     field: "SitUp"    },
+        sitReach: { label: "Sit & Reach (cm)",       placeholder: "e.g. 15.5",   field: "SitReach" },
+        run9Min:  { label: "9-Min Run (Meters)",     placeholder: "e.g. 1630",   field: "Run9Min"  }
+    };
 
     window.onload = function() {
         updateRecordCount();
         renderClassButtons();
-        renderNumberGrid(40); 
-        fetchMasterList(); 
+        renderNumberGrid(40);
+        fetchMasterList();
+        initTestModeButtons();
     };
 
-    // --- CORE ENGINE: FETCH AND MAP EXACT CELLS ---
+    function initTestModeButtons() {
+        document.querySelectorAll('.test-mode').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.test-mode').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentItem = btn.dataset.item;
+
+                const cfg = itemConfig[currentItem];
+                document.getElementById('currentTestLabel').innerText = cfg.label;
+                const input = document.getElementById('currentValue');
+                input.placeholder = cfg.placeholder;
+                input.value = '';
+                input.focus();
+            };
+        });
+    }
+
     async function fetchMasterList() {
         const fileName = document.getElementById('termSelector').value;
         const statusText = document.getElementById('dbStatus');
@@ -141,60 +164,52 @@
 
         try {
             const cacheBuster = '?t=' + new Date().getTime();
-            const response = await fetch('./' + fileName + cacheBuster); 
+            const response = await fetch('./' + fileName + cacheBuster);
             if (!response.ok) throw new Error("File not found");
-            
+           
             const arrayBuffer = await response.arrayBuffer();
-            masterWorkbookBuffer = arrayBuffer.slice(0); // SAVE A COPY OF THE RAW WORKBOOK
-            
+            masterWorkbookBuffer = arrayBuffer.slice(0);
+           
             const workbook = XLSX.read(arrayBuffer, {type: 'array'});
             let cleanList = [];
 
-            // Read every sheet in the workbook
             workbook.SheetNames.forEach(sheetName => {
-                if (sheetName.toLowerCase().includes("overall")) return; // Skip summary sheets
-
+                if (sheetName.toLowerCase().includes("overall")) return;
                 const worksheet = workbook.Sheets[sheetName];
-                // Read as raw 2D array to find exact rows and columns
                 const rows = XLSX.utils.sheet_to_json(worksheet, {header: 1, defval: ""});
-
                 let headerRowIdx = -1;
                 let colMap = {};
 
-                // Step 1: Find the header row in this specific sheet
                 for (let r = 0; r < rows.length; r++) {
                     const row = rows[r];
                     if (!row) continue;
-
                     const clsNoIdx = row.findIndex(cell => String(cell).toUpperCase().trim() === 'CLASS_NO');
                     if (clsNoIdx !== -1) {
                         headerRowIdx = r;
-                        colMap.clsNo = clsNoIdx;
-                        colMap.enName = row.findIndex(cell => String(cell).toUpperCase().trim() === 'EN_NAME');
-                        colMap.chName = row.findIndex(cell => String(cell).toUpperCase().trim() === 'CH_NAME');
-                        // Find the fitness columns (first occurrence to avoid the "Score" column duplicates)
-                        colMap.pushUp = row.findIndex(cell => String(cell).trim() === 'Push up');
-                        colMap.sitUp = row.findIndex(cell => String(cell).trim() === 'Sit up');
+                        colMap.clsNo    = clsNoIdx;
+                        colMap.enName   = row.findIndex(cell => String(cell).toUpperCase().trim() === 'EN_NAME');
+                        colMap.chName   = row.findIndex(cell => String(cell).toUpperCase().trim() === 'CH_NAME');
+                        colMap.pushUp   = row.findIndex(cell => String(cell).trim() === 'Push up');
+                        colMap.sitUp    = row.findIndex(cell => String(cell).trim() === 'Sit up');
                         colMap.sitReach = row.findIndex(cell => String(cell).trim() === 'Sit & Reach');
-                        colMap.run9Min = row.findIndex(cell => String(cell).trim() === '9-min run');
+                        colMap.run9Min  = row.findIndex(cell => String(cell).trim() === '9-min run');
                         break;
                     }
                 }
 
-                // Step 2: Map out where every student lives on this sheet
                 if (headerRowIdx !== -1) {
                     for (let r = headerRowIdx + 1; r < rows.length; r++) {
                         const row = rows[r];
                         const classNo = parseInt(row[colMap.clsNo]);
                         if (!isNaN(classNo)) {
                             cleanList.push({
-                                SheetName: sheetName, // Exact tab name (e.g. "1A ")
-                                CleanClass: sheetName.replace(/\s/g, ''), // Cleaned for UI logic (e.g. "1A")
+                                SheetName: sheetName,
+                                CleanClass: sheetName.replace(/\s/g, ''),
                                 ClassNo: classNo,
                                 EnName: row[colMap.enName] || "",
                                 ChName: colMap.chName !== -1 ? row[colMap.chName] : "",
-                                RowIndex: r, // <--- EXACT EXCEL ROW
-                                ColPushUp: colMap.pushUp, // <--- EXACT EXCEL COLUMNS
+                                RowIndex: r,
+                                ColPushUp: colMap.pushUp,
                                 ColSitUp: colMap.sitUp,
                                 ColSitReach: colMap.sitReach,
                                 ColRun9Min: colMap.run9Min
@@ -207,7 +222,6 @@
             masterStudentList = cleanList;
             statusText.innerText = `✅ Template Synced (${masterStudentList.length} students ready)`;
             statusText.style.color = "var(--success)";
-
         } catch (error) {
             console.error(error);
             statusText.innerText = `❌ Error: Could not load template ${fileName}.`;
@@ -231,11 +245,10 @@
         currentClass = cls;
         currentNumber = null;
         currentStudentObj = null;
-
         document.querySelectorAll('#classGrid .tap-btn').forEach(b => b.classList.remove('active'));
         clickedBtn.classList.add('active');
 
-        let maxNum = 40; 
+        let maxNum = 40;
         if (masterStudentList.length > 0) {
             const classStudents = masterStudentList.filter(s => s.CleanClass === cls);
             if (classStudents.length > 0) {
@@ -252,7 +265,9 @@
         grid.innerHTML = '';
         for (let i = 1; i <= maxCount; i++) {
             const btn = document.createElement('div');
-            btn.className = 'number-box'; btn.innerText = i; btn.id = `num-btn-${i}`;
+            btn.className = 'number-box';
+            btn.innerText = i;
+            btn.id = `num-btn-${i}`;
             btn.onclick = () => selectNumber(i, btn);
             grid.appendChild(btn);
         }
@@ -263,9 +278,14 @@
         document.querySelectorAll('#numberGrid .number-box').forEach(b => b.classList.remove('active'));
         clickedBtn.classList.add('active');
         clickedBtn.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        
+       
         currentStudentObj = masterStudentList.find(s => s.CleanClass === currentClass && s.ClassNo === parseInt(currentNumber));
         updateProfileCard();
+
+        // Optional: pre-fill current value if already saved
+        const record = savedRecords.find(r => r.Class === currentClass && r.ClassNumber === currentNumber);
+        const field = itemConfig[currentItem].field;
+        document.getElementById('currentValue').value = record && record[field] ? record[field] : '';
     }
 
     function updateProfileCard() {
@@ -278,12 +298,12 @@
                 card.classList.remove('empty');
                 statusLabel.innerText = `Ready: ${currentClass} No. ${currentNumber}`;
                 nameDisplay.innerText = `${currentStudentObj.EnName} ${currentStudentObj.ChName}`;
-                nameDisplay.style.color = "#064E3B"; 
+                nameDisplay.style.color = "#064E3B";
             } else {
                 card.classList.remove('empty');
                 statusLabel.innerText = `⚠️ Missing Data`;
                 nameDisplay.innerText = "Student not in Server Template";
-                nameDisplay.style.color = "#EF4444"; 
+                nameDisplay.style.color = "#EF4444";
             }
         } else {
             card.classList.add('empty');
@@ -294,78 +314,76 @@
     }
 
     function saveData() {
-        if (!currentClass || !currentNumber || !currentStudentObj) return alert("⚠️ Please tap a valid student.");
+        if (!currentClass || !currentNumber || !currentStudentObj) {
+            alert("⚠️ Please tap a valid student.");
+            return;
+        }
 
-        const pushUp = document.getElementById('pushUp').value;
-        const sitUp = document.getElementById('sitUp').value;
-        const sitReach = document.getElementById('sitReach').value;
-        const run9Min = document.getElementById('run9Min').value;
+        const value = document.getElementById('currentValue').value.trim();
+        if (!value) {
+            alert("⚠️ Please enter a value.");
+            return;
+        }
 
-        if (!pushUp && !sitUp && !sitReach && !run9Min) return alert("⚠️ Enter at least one result.");
+        const cfg = itemConfig[currentItem];
+        let record = savedRecords.find(r => r.Class === currentClass && r.ClassNumber === currentNumber);
 
-        const newRecord = {
-            Class: currentClass,
-            ClassNumber: currentNumber,
-            PushUp: pushUp,
-            SitUp: sitUp,
-            SitReach: sitReach,
-            Run9Min: run9Min
-        };
+        if (!record) {
+            record = { Class: currentClass, ClassNumber: currentNumber };
+            savedRecords.push(record);
+        }
 
-        const existingIndex = savedRecords.findIndex(r => r.Class === currentClass && r.ClassNumber === currentNumber);
-        if (existingIndex > -1) savedRecords[existingIndex] = newRecord;
-        else savedRecords.push(newRecord);
+        record[cfg.field] = value;
 
         localStorage.setItem('fitnessRecords', JSON.stringify(savedRecords));
         updateRecordCount();
 
-        // Clear UI
-        ['pushUp', 'sitUp', 'sitReach', 'run9Min'].forEach(id => document.getElementById(id).value = '');
+        // Visual feedback
         document.body.style.backgroundColor = "#dcfce7";
         setTimeout(() => document.body.style.backgroundColor = "var(--background)", 300);
 
-        // Auto-Next
+        // Clear and focus again
+        document.getElementById('currentValue').value = '';
+        document.getElementById('currentValue').focus();
+
+        // Auto next
         const nextBtn = document.getElementById(`num-btn-${parseInt(currentNumber) + 1}`);
-        if (nextBtn) nextBtn.click(); 
-        else {
-            currentNumber = null; currentStudentObj = null;
+        if (nextBtn) {
+            nextBtn.click();
+        } else {
+            currentNumber = null;
+            currentStudentObj = null;
             document.querySelectorAll('#numberGrid .number-box').forEach(b => b.classList.remove('active'));
             updateProfileCard();
         }
     }
 
-    // --- MAGIC EXPORT: INJECTS DATA INTO ORIGINAL FILE ---
     function exportData() {
         if (!masterWorkbookBuffer) return alert("❌ Wait for the server template to load first!");
         if (savedRecords.length === 0) return alert("❌ No records saved on this iPad.");
 
-        // 1. Re-open the original downloaded workbook
         const wb = XLSX.read(masterWorkbookBuffer, {type: 'array'});
 
-        // 2. Safely inject a cell value
         const injectCell = (sheet, r, c, val) => {
             if (c !== -1 && val !== "" && val !== null && val !== undefined) {
                 const cellAddress = XLSX.utils.encode_cell({r: r, c: c});
-                sheet[cellAddress] = { t: 'n', v: Number(val) }; // 'n' stands for Number format
+                sheet[cellAddress] = { t: 'n', v: Number(val) };
             }
         };
 
-        // 3. Inject all saved data into exact coordinates
         savedRecords.forEach(record => {
             const studentMap = masterStudentList.find(s => s.CleanClass === record.Class && s.ClassNo === parseInt(record.ClassNumber));
-            
-            if (studentMap) {
-                const ws = wb.Sheets[studentMap.SheetName]; // Gets exact tab, e.g. "1A "
-                if (!ws) return;
+            if (!studentMap) return;
 
-                injectCell(ws, studentMap.RowIndex, studentMap.ColPushUp, record.PushUp);
-                injectCell(ws, studentMap.RowIndex, studentMap.ColSitUp, record.SitUp);
-                injectCell(ws, studentMap.RowIndex, studentMap.ColSitReach, record.SitReach);
-                injectCell(ws, studentMap.RowIndex, studentMap.ColRun9Min, record.Run9Min);
-            }
+            const ws = wb.Sheets[studentMap.SheetName];
+            if (!ws) return;
+
+            injectCell(ws, studentMap.RowIndex, studentMap.ColPushUp,   record.PushUp);
+            injectCell(ws, studentMap.RowIndex, studentMap.ColSitUp,    record.SitUp);
+            injectCell(ws, studentMap.RowIndex, studentMap.ColSitReach, record.SitReach);
+            injectCell(ws, studentMap.RowIndex, studentMap.ColRun9Min,  record.Run9Min);
         });
 
-        // 4. Download modified original file
         const fileName = document.getElementById('termSelector').value;
         const outName = "COMPLETED_FITNESS_" + fileName;
         XLSX.writeFile(wb, outName);
@@ -381,7 +399,10 @@
             alert("✅ Memory cleared!");
         }
     }
-    function updateRecordCount() { document.getElementById('recordCount').innerText = savedRecords.length; }
+
+    function updateRecordCount() {
+        document.getElementById('recordCount').innerText = savedRecords.length;
+    }
 </script>
 </body>
 </html>
