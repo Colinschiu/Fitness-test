@@ -77,18 +77,18 @@
     </div>
 
     <div class="form-group">
-        <label>2. Select Test Item</label>
+        <label>2. Select Class Number <span id="maxCountLabel" style="font-weight: 400; font-size: 14px; color: #64748b;"></span></label>
+        <div id="numberGrid" class="number-grid"></div>
+    </div>
+
+    <div class="form-group">
+        <label>3. Select Test Item</label>
         <div class="test-mode-grid">
             <button class="tap-btn test-mode active" data-item="pushUp">Push-ups</button>
             <button class="tap-btn test-mode" data-item="sitUp">Sit-ups</button>
             <button class="tap-btn test-mode" data-item="sitReach">Sit & Reach</button>
             <button class="tap-btn test-mode" data-item="run9Min">9-min Run</button>
         </div>
-    </div>
-
-    <div class="form-group">
-        <label>3. Select Class Number <span id="maxCountLabel" style="font-weight: 400; font-size: 14px; color: #64748b;"></span></label>
-        <div id="numberGrid" class="number-grid"></div>
     </div>
 
     <div class="id-card empty" id="studentProfileCard">
@@ -134,7 +134,7 @@
     window.onload = function() {
         updateRecordCount();
         renderClassButtons();
-        renderNumberGrid(40);
+        // We delay rendering number grid until class is selected
         fetchMasterList();
         initTestModeButtons();
     };
@@ -282,7 +282,7 @@
         currentStudentObj = masterStudentList.find(s => s.CleanClass === currentClass && s.ClassNo === parseInt(currentNumber));
         updateProfileCard();
 
-        // Optional: pre-fill current value if already saved
+        // Pre-fill current value if already saved for this test item
         const record = savedRecords.find(r => r.Class === currentClass && r.ClassNumber === currentNumber);
         const field = itemConfig[currentItem].field;
         document.getElementById('currentValue').value = record && record[field] ? record[field] : '';
@@ -342,11 +342,11 @@
         document.body.style.backgroundColor = "#dcfce7";
         setTimeout(() => document.body.style.backgroundColor = "var(--background)", 300);
 
-        // Clear and focus again
+        // Clear and refocus
         document.getElementById('currentValue').value = '';
         document.getElementById('currentValue').focus();
 
-        // Auto next
+        // Auto-advance to next student
         const nextBtn = document.getElementById(`num-btn-${parseInt(currentNumber) + 1}`);
         if (nextBtn) {
             nextBtn.click();
